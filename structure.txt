@@ -1,0 +1,6 @@
+gemini-vps-bridge/
+├── manifest.json
+├── sidepanel.html
+├── sidepanel.js
+├── content.js
+└── background.js
