@@ -1,32 +1,59 @@
 const CANVAS_URL = "https://gemini.google.com/share/26b1c2d69587";
 let socket = null;
+let reconnectTimer = null;
+
+// Allow sidepanel to open on toolbar icon click
+chrome.sidePanel
+  .setPanelBehavior({ openPanelOnActionClick: true })
+  .catch((error) => console.error(error));
 
 function connectRelay() {
-  socket = new WebSocket("ws://127.0.0.1:8765");
+  if (socket && (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING)) {
+    return;
+  }
 
-  socket.onopen = () => console.log("[Background] Connected to local relay 8765");
+  try {
+    socket = new WebSocket("ws://127.0.0.1:8765");
 
-  socket.onmessage = async (event) => {
-    try {
-      const data = JSON.parse(event.data);
-      console.log("[Background] New generation request received:", data);
-      await processRequest(data);
-    } catch (err) {
-      console.error("[Background] Parse error:", err);
-    }
-  };
+    socket.onopen = () => {
+      console.log("[Background] Connected to local relay 8765");
+      if (reconnectTimer) clearInterval(reconnectTimer);
+    };
 
-  socket.onclose = () => {
-    console.warn("[Background] Relay closed. Reconnecting in 3s...");
-    setTimeout(connectRelay, 3000);
-  };
+    socket.onmessage = async (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        console.log("[Background] New generation request received:", data);
+        await processRequest(data);
+      } catch (err) {
+        console.error("[Background] Parse error:", err);
+      }
+    };
 
-  socket.onerror = () => socket.close();
+    socket.onclose = () => {
+      scheduleReconnect();
+    };
+
+    socket.onerror = () => {
+      // Quiet fail if relay server is not started yet
+      socket.close();
+    };
+  } catch (e) {
+    scheduleReconnect();
+  }
 }
 
-// Ensure Canvas tab is active/created, then execute
+function scheduleReconnect() {
+  if (!reconnectTimer) {
+    reconnectTimer = setTimeout(() => {
+      reconnectTimer = null;
+      connectRelay();
+    }, 5000);
+  }
+}
+
+// Autonomous Tab & Execution Handling
 async function processRequest(payload) {
-  // 1. Check if Canvas tab already exists
   const tabs = await chrome.tabs.query({});
   let targetTab = tabs.find(t => t.url && t.url.includes("gemini.google.com/share/26b1c2d69587"));
 
@@ -34,19 +61,17 @@ async function processRequest(payload) {
     console.log("[Background] Canvas tab not open. Opening new tab in background...");
     targetTab = await chrome.tabs.create({ url: CANVAS_URL, active: false });
     
-    // Wait for the new tab to finish loading
     await new Promise(resolve => {
       const listener = (tabId, info) => {
         if (tabId === targetTab.id && info.status === "complete") {
           chrome.tabs.onUpdated.removeListener(listener);
-          setTimeout(resolve, 2500); // Allow iframe initialization
+          setTimeout(resolve, 2500);
         }
       };
       chrome.tabs.onUpdated.addListener(listener);
     });
   }
 
-  // 2. Inject directly into all frames
   try {
     const results = await chrome.scripting.executeScript({
       target: { tabId: targetTab.id, allFrames: true },
@@ -67,15 +92,15 @@ async function processRequest(payload) {
   }
 }
 
-// Runs inside iframe
+// Injected into Canvas iframe
 function injectedCanvasWorker(data) {
-  const textareas = Array.from(document.querySelectorAll('textarea'));
+  const allTextareas = Array.from(document.querySelectorAll('textarea'));
   const genBtn = document.getElementById('generateBtn') ||
                  Array.from(document.querySelectorAll('button')).find(b => 
                    b.innerText && b.innerText.toUpperCase().includes('GENERATE')
                  );
 
-  if (!genBtn || textareas.length === 0) return { success: false };
+  if (!genBtn || allTextareas.length === 0) return { success: false };
 
   // Aspect ratio
   if (data.aspect_ratio) {
@@ -91,7 +116,7 @@ function injectedCanvasWorker(data) {
     }
   }
 
-  // Toggles
+  // Checkboxes
   const allCheckboxes = Array.from(document.querySelectorAll('input[type="checkbox"]'));
   if (data.character_prompt && allCheckboxes[0] && !allCheckboxes[0].checked) {
     (allCheckboxes[0].closest('label') || allCheckboxes[0]).click();
@@ -104,11 +129,12 @@ function injectedCanvasWorker(data) {
     allCheckboxes[1].dispatchEvent(new Event('change', { bubbles: true }));
   }
 
+  // Inject Prompts accurately
   setTimeout(() => {
-    const freshAreas = Array.from(document.querySelectorAll('textarea'));
-    let charInput = freshAreas.length >= 3 ? freshAreas[0] : null;
-    let styleInput = freshAreas.length >= 3 ? freshAreas[1] : null;
-    let mainInput = freshAreas.length >= 3 ? freshAreas[2] : freshAreas[freshAreas.length - 1];
+    const textareas = Array.from(document.querySelectorAll('textarea'));
+    let charInput = textareas.length >= 3 ? textareas[0] : null;
+    let styleInput = textareas.length >= 3 ? textareas[1] : null;
+    let mainInput = textareas.length >= 3 ? textareas[2] : textareas[textareas.length - 1];
 
     function setVal(elem, val) {
       if (!elem) return;
@@ -130,5 +156,5 @@ function injectedCanvasWorker(data) {
   return { success: true };
 }
 
-// Start auto connection
+// Start auto connection attempt
 connectRelay();
