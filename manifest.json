@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "CREATOR CORE Canvas Injector",
+  "version": "3.0",
+  "description": "Autonomous Canvas Background Injector",
+  "permissions": [
+    "tabs",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
