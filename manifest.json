@@ -1,16 +1,23 @@
 {
   "manifest_version": 3,
   "name": "CREATOR CORE Canvas Injector",
-  "version": "3.0",
-  "description": "Autonomous Canvas Background Injector",
+  "version": "3.1",
+  "description": "Autonomous Canvas Background and Manual Injector",
   "permissions": [
     "tabs",
     "scripting",
-    "storage"
+    "storage",
+    "sidePanel"
   ],
   "host_permissions": [
     "<all_urls>"
   ],
+  "action": {
+    "default_title": "Open Creator Core Sidepanel"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
   "background": {
     "service_worker": "background.js"
   }
