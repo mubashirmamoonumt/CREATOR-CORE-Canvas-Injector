@@ -7,6 +7,7 @@ chrome.sidePanel
   .setPanelBehavior({ openPanelOnActionClick: true })
   .catch((error) => console.error(error));
 
+// 24/7 Background WebSocket connection
 function connectRelay() {
   if (socket && (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING)) {
     return;
@@ -17,14 +18,17 @@ function connectRelay() {
 
     socket.onopen = () => {
       console.log("[Background] Connected to local relay 8765");
-      if (reconnectTimer) clearInterval(reconnectTimer);
+      if (reconnectTimer) {
+        clearTimeout(reconnectTimer);
+        reconnectTimer = null;
+      }
     };
 
     socket.onmessage = async (event) => {
       try {
         const data = JSON.parse(event.data);
-        console.log("[Background] New generation request received:", data);
-        await processRequest(data);
+        console.log("[Background] VPS Job received:", data);
+        await processJob(data);
       } catch (err) {
         console.error("[Background] Parse error:", err);
       }
@@ -35,7 +39,6 @@ function connectRelay() {
     };
 
     socket.onerror = () => {
-      // Quiet fail if relay server is not started yet
       socket.close();
     };
   } catch (e) {
@@ -48,34 +51,38 @@ function scheduleReconnect() {
     reconnectTimer = setTimeout(() => {
       reconnectTimer = null;
       connectRelay();
-    }, 5000);
+    }, 3000);
   }
 }
 
-// Autonomous Tab & Execution Handling
-async function processRequest(payload) {
+// Ensure Canvas tab is active/created, wait for iframe, then inject
+async function processJob(payload) {
   const tabs = await chrome.tabs.query({});
+  // Check if canvas tab exists
   let targetTab = tabs.find(t => t.url && t.url.includes("gemini.google.com/share/26b1c2d69587"));
 
   if (!targetTab) {
-    console.log("[Background] Canvas tab not open. Opening new tab in background...");
+    console.log("[Background] Canvas tab band tha. Naya background tab khol rahe hain...");
     targetTab = await chrome.tabs.create({ url: CANVAS_URL, active: false });
-    
+
+    // Wait until tab completes loading
     await new Promise(resolve => {
       const listener = (tabId, info) => {
         if (tabId === targetTab.id && info.status === "complete") {
           chrome.tabs.onUpdated.removeListener(listener);
-          setTimeout(resolve, 2500);
+          // Wait for iframe & React components to mount
+          setTimeout(resolve, 3500);
         }
       };
       chrome.tabs.onUpdated.addListener(listener);
     });
   }
 
+  // Inject into all frames of targetTab
   try {
     const results = await chrome.scripting.executeScript({
       target: { tabId: targetTab.id, allFrames: true },
-      func: injectedCanvasWorker,
+      func: performCanvasInjectionInFrame,
       args: [payload]
     });
 
@@ -88,21 +95,13 @@ async function processRequest(payload) {
     }
     console.log("[Background] Injection result:", ok ? "Success" : "Elements not found");
   } catch (err) {
-    console.error("[Background] Scripting error:", err);
+    console.error("[Background] Scripting execution error:", err);
   }
 }
 
-// Injected into Canvas iframe
-function injectedCanvasWorker(data) {
-  const allTextareas = Array.from(document.querySelectorAll('textarea'));
-  const genBtn = document.getElementById('generateBtn') ||
-                 Array.from(document.querySelectorAll('button')).find(b => 
-                   b.innerText && b.innerText.toUpperCase().includes('GENERATE')
-                 );
-
-  if (!genBtn || allTextareas.length === 0) return { success: false };
-
-  // Aspect ratio
+// Injected into the Canvas iframe
+function performCanvasInjectionInFrame(data) {
+  // 1. Aspect Ratio Dropdown
   if (data.aspect_ratio) {
     const ratioSelect = document.getElementById('aspectRatio') || document.querySelector('select');
     if (ratioSelect) {
@@ -116,20 +115,22 @@ function injectedCanvasWorker(data) {
     }
   }
 
-  // Checkboxes
+  // 2. Toggle Switches (Character & Style)
   const allCheckboxes = Array.from(document.querySelectorAll('input[type="checkbox"]'));
   if (data.character_prompt && allCheckboxes[0] && !allCheckboxes[0].checked) {
-    (allCheckboxes[0].closest('label') || allCheckboxes[0]).click();
+    const lbl = allCheckboxes[0].closest('label') || allCheckboxes[0];
+    lbl.click();
     allCheckboxes[0].checked = true;
     allCheckboxes[0].dispatchEvent(new Event('change', { bubbles: true }));
   }
   if (data.style_prompt && allCheckboxes[1] && !allCheckboxes[1].checked) {
-    (allCheckboxes[1].closest('label') || allCheckboxes[1]).click();
+    const lbl = allCheckboxes[1].closest('label') || allCheckboxes[1];
+    lbl.click();
     allCheckboxes[1].checked = true;
     allCheckboxes[1].dispatchEvent(new Event('change', { bubbles: true }));
   }
 
-  // Inject Prompts accurately
+  // 3. Inject Textareas
   setTimeout(() => {
     const textareas = Array.from(document.querySelectorAll('textarea'));
     let charInput = textareas.length >= 3 ? textareas[0] : null;
@@ -148,13 +149,29 @@ function injectedCanvasWorker(data) {
     if (data.style_prompt && styleInput) setVal(styleInput, data.style_prompt);
     if (data.prompt && mainInput) setVal(mainInput, data.prompt);
 
+    // 4. Click GENERATE IMAGES
     setTimeout(() => {
-      if (genBtn) genBtn.click();
+      const genBtn = document.getElementById('generateBtn') ||
+                     Array.from(document.querySelectorAll('button')).find(b => 
+                       b.innerText && b.innerText.toUpperCase().includes('GENERATE')
+                     );
+      if (genBtn) {
+        genBtn.click();
+        console.log("[Background Canvas Worker] Generate button clicked!");
+      }
     }, 400);
+
   }, 250);
 
   return { success: true };
 }
 
-// Start auto connection attempt
+// Listener for manual test triggers from sidepanel.js
+chrome.runtime.onMessage.addListener((msg) => {
+  if (msg.action === "RUN_MANUAL_JOB") {
+    processJob(msg.payload);
+  }
+});
+
+// Start auto connection immediately
 connectRelay();
