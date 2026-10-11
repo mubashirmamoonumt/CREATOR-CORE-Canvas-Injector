@@ -15,7 +15,7 @@ Author: Mubashir Mamoon
 
 ## Overview
 
-`CREATOR CORE – Canvas Injector` connects a local relay service to a Chrome extension that automates Canvas-based image generation. You send a job via HTTP, the extension performs the generation, and the relay uploads the resulting ZIP archive to your callback URL.
+`CREATOR CORE – Canvas Injector` connects a local relay service to a Chrome extension that automates Canvas-based image generation. You send a job via HTTP, the extension performs the generation[...]
 
 This setup is designed for bulk image generation workflows where prompt lists, aspect ratios, and staged callback handling are required.
 
@@ -32,12 +32,12 @@ This setup is designed for bulk image generation workflows where prompt lists, a
 
 ```text
 API call ──> Relay (Ngrok) ──> Chrome Extension ──> Canvas
-                                      │
-                               ZIP downloaded
-                                      │
-                      Relay ──POST multipart──> callback_url
-                                      │
-                         200 OK ──> tab closed + ZIP deleted
+                                     │
+                              ZIP downloaded
+                                     │
+                       Relay ──POST multipart──> callback_url
+                                     │
+                          200 OK ──> tab closed + ZIP deleted
 ```
 
 ## Requirements
@@ -51,13 +51,20 @@ API call ──> Relay (Ngrok) ──> Chrome Extension ──> Canvas
 
 ## Installation
 
+> **⚠️ IMPORTANT:** You only need to download the **setup file** for your OS. The setup file will automatically clone and configure everything. **No manual repository cloning is required.**
+
 ### Windows
 
-1. Download `setup.bat`
+1. Download `setup.bat` from this repository
 2. Right-click the file and select `Run as administrator`
 3. Choose a routing mode when prompted:
    - `1` Static domain (Authtoken + reserved domain)
    - `2` Dynamic ephemeral URL (free tier)
+
+The setup will automatically:
+- Clone the repository
+- Install all dependencies
+- Configure the relay and extension
 
 The project is installed under:
 
@@ -67,10 +74,18 @@ The project is installed under:
 
 ### macOS
 
+1. Download `setup.sh` from this repository
+2. Run the setup:
+
 ```bash
 cd ~/Downloads
 chmod +x setup.sh && ./setup.sh
 ```
+
+The setup will automatically:
+- Clone the repository
+- Install all dependencies
+- Configure the relay and extension
 
 The project is installed under:
 
