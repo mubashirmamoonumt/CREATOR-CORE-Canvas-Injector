@@ -14,25 +14,26 @@ This software and associated files are provided under the following terms.
    The source code, compiled code, scripts, assets, and any embedded components
    must remain unmodified.
 
-3. EMBEDDING IN TOOLS
-   You may embed this software in another application, tool, product, or service
-   solely for end-user use, provided that:
-   - the embedded software remains unchanged,
-   - no part of this software is sold separately,
-   - the software is not offered as a paid product, subscription, or commercial
-     service,
-   - the software is not redistributed in a modified or altered form.
+3. EMBEDDING IN COMMERCIAL TOOLS - ALLOWED
+   You may embed this software in a commercial product, tool, application, or
+   service and sell that tool/product, PROVIDED THAT:
+   - The software itself is not sold separately or as a standalone product,
+   - The software remains completely unchanged and unmodified,
+   - The software is not extracted, repackaged, or redistributed outside of
+     your tool/product,
+   - You acknowledge the software is based on CREATOR CORE CANVAS INJECTOR in
+     your product documentation or credits.
 
-4. NO SALE OR COMMERCIAL EXPLOITATION
-   You may not sell, resell, rent, lease, sublicense, license for a fee,
-   charge for access to, or commercially monetize this software or any part of it.
-   You may not package, bundle, or distribute it as a paid product, premium addon,
-   or commercial offering.
+4. DIRECT SALE OF SOFTWARE NOT ALLOWED
+   You may not sell, resell, rent, lease, or sublicense the software itself
+   directly. This includes:
+   - Offering it as a standalone paid product or service,
+   - Selling access to an unmodified version of the software,
+   - Licensing it separately to third parties for a fee.
 
 5. NO REDISTRIBUTION WITH CHANGES
    You may not redistribute this software or any embedded copy in modified form.
-   Any redistribution must preserve this license in full and must not create a
-   derivative work.
+   Any redistribution must preserve this license in full.
 
 6. NO WARRANTY
    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -43,10 +44,9 @@ This software and associated files are provided under the following terms.
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE.
 
-7. PERMISSION FOR COMMERCIAL OR MODIFIED USE
-   If you want to use this software commercially, modify it, distribute it in a
-   modified form, or include it in a paid product, you must obtain written
-   permission from the copyright holder before doing so.
+7. PERMISSION FOR MODIFICATIONS OR DIRECT SALE
+   If you want to modify this software or sell it directly as a standalone
+   product/service, you must obtain written permission from the copyright holder.
 
 8. OWNERSHIP
    This software remains the exclusive property of the copyright holder. This
