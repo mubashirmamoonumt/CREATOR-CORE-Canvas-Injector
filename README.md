@@ -15,7 +15,7 @@ Author: Mubashir Mamoon
 
 ## Overview
 
-`CREATOR CORE – Canvas Injector` connects a local relay service to a Chrome extension that automates Canvas-based image generation. You send a job via HTTP, the extension performs the generation[...]
+`CREATOR CORE – Canvas Injector` connects a local relay service to a Chrome extension that automates Canvas-based image generation. You send a job via HTTP, the extension performs the generation and returns the finished ZIP through your callback webhook once the task is complete.
 
 This setup is designed for bulk image generation workflows where prompt lists, aspect ratios, and staged callback handling are required.
 
@@ -39,6 +39,12 @@ API call ──> Relay (Ngrok) ──> Chrome Extension ──> Canvas
                                      │
                           200 OK ──> tab closed + ZIP deleted
 ```
+
+## Automation
+
+The system should remain on and Chrome should be open. You do not need to stay on the same Chrome profile or the same tab. Simply open the Chrome profile where the extension is installed, leave it active, and the automation can keep running.
+
+This same workflow works on an RDP machine as well. Keep Chrome open and active on the remote desktop, and the extension will stay available 24/7 for your automation without needing to keep a specific profile or tab focused.
 
 ## Requirements
 
