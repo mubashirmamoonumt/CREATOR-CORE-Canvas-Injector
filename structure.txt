@@ -15,4 +15,8 @@ CREATOR-CORE-Canvas-Injector/
 │
 ├── relay_server.py                      # Local Python Daemon (Port 5000 HTTP & Port 8765 WebSocket relay, ZIP auto-upload & disk purge)[cite: 12]
 │
-└── README.md                            # Complete Project Setup, Usage Guide & API Documentation[cite: 11]
+├── setup.bat                            # Windows Autonomous Setup Script (Git, Python 3.11, Ngrok, startup daemon & clipboard copy)[cite: 14]
+├── setup.sh                             # macOS Autonomous Setup Script (Architecture detection, Python3, nohup background services)
+│
+├── README.md                            # Complete Project Setup, Usage Guide & API Documentation[cite: 11]
+└── structure.txt                        # Project directory and file architecture overview
