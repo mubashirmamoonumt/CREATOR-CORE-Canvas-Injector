@@ -14,22 +14,23 @@ This software and associated files are provided under the following terms.
    The source code, compiled code, scripts, assets, and any embedded components
    must remain unmodified.
 
-3. EMBEDDING IN COMMERCIAL TOOLS - ALLOWED
-   You may embed this software in a commercial product, tool, application, or
-   service and sell that tool/product, PROVIDED THAT:
-   - The software itself is not sold separately or as a standalone product,
-   - The software remains completely unchanged and unmodified,
-   - The software is not extracted, repackaged, or redistributed outside of
-     your tool/product,
-   - You acknowledge the software is based on CREATOR CORE CANVAS INJECTOR in
-     your product documentation or credits.
+3. PERMISSION TO USE, COPY, AND EMBED
+   Permission is granted to use, copy, and embed this software within a larger
+   product or tool, provided that the software is not sold or distributed as a
+   standalone product, is not modified, and remains subject to this license.
+
+   You may include this software in a commercial product or tool only if:
+   - the software itself is not sold separately,
+   - the software remains completely unchanged,
+   - the software is not extracted, repackaged, or redistributed independently,
+   - the software remains subject to this license.
 
 4. DIRECT SALE OF SOFTWARE NOT ALLOWED
    You may not sell, resell, rent, lease, or sublicense the software itself
    directly. This includes:
-   - Offering it as a standalone paid product or service,
-   - Selling access to an unmodified version of the software,
-   - Licensing it separately to third parties for a fee.
+   - offering it as a standalone paid product or service,
+   - selling access to an unmodified version of the software,
+   - licensing it separately to third parties for a fee.
 
 5. NO REDISTRIBUTION WITH CHANGES
    You may not redistribute this software or any embedded copy in modified form.
