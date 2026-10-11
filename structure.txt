@@ -1,6 +1,18 @@
-gemini-vps-bridge/
-├── manifest.json
-├── sidepanel.html
-├── sidepanel.js
-├── content.js
-└── background.js
+CREATOR-CORE-Canvas-Injector/
+│
+├── .git/                                # Git version control repository data[cite: 14]
+├── .gitignore                           # Git ignore rules (node_modules, logs, virtual environments)
+│
+├── manifest.json                        # Chrome Extension Manifest V3 configuration & permissions[cite: 18]
+├── background.js                        # Background Service Worker (Relay WebSocket connection, Canvas tab & monitoring lifecycle)[cite: 1, 18]
+├── content.js                           # Content Script for DOM interaction & direct prompt injection[cite: 9]
+├── bridge.js                            # Bridge script handling socket message dispatch & image result listeners[cite: 8]
+│
+├── sidepanel.html                       # Extension UI (Royal Velvet theme, tabs, generation forms & sticky footer promo card)[cite: 13]
+├── sidepanel.js                         # Sidepanel controller (manual generation, settings storage, tab switching & events)[cite: 19]
+│
+├── icon.png                             # Extension Icon (512x512 PNG format for Chrome toolbar & store listing)[cite: 17, 18]
+│
+├── relay_server.py                      # Local Python Daemon (Port 5000 HTTP & Port 8765 WebSocket relay, ZIP auto-upload & disk purge)[cite: 12]
+│
+└── README.md                            # Complete Project Setup, Usage Guide & API Documentation[cite: 11]
