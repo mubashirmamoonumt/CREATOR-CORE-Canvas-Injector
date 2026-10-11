@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Creator Core Canvas Injector by Mubashir Mamoon</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #4A00E0 0%, #8E2DE2 100%);
+      --primary-accent: #8E2DE2;
+      --primary-glow: rgba(142, 45, 226, 0.45);
+      
+      --bg-dark: #0B0416;
+      --surface-dark: #140927;
+      --border-dark: #24123E;
+      --border-focus: #8E2DE2;
+      
+      --danger-gradient: linear-gradient(135deg, #870000 0%, #190A05 100%);
+      --danger-border: #870000;
+      --danger-glow: rgba(135, 0, 0, 0.4);
+      
+      --text-main: #F8FAFC;
+      --text-sub: #A78BFA;
+      --text-muted: #94A3B8;
+    }
+
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg-dark);
+      color: var(--text-main);
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      padding: 14px;
+      font-size: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .app-main-content {
+      flex: 1 0 auto;
+    }
+
+    .header-bar { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: flex-start; 
+      margin-bottom: 3px; 
+    }
+
+    h2 { 
+      font-size: 16px; 
+      font-weight: 800;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .sub { 
+      font-size: 10px; 
+      color: var(--text-sub); 
+      font-weight: 700;
+      letter-spacing: 0.6px; 
+      text-transform: uppercase; 
+      margin-bottom: 12px; 
+    }
+    .sub a {
+      color: var(--text-sub);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      transition: color 0.2s ease;
+    }
+    .sub a:hover {
+      color: #FFFFFF;
+    }
+    
+    .gear-btn {
+      background: var(--surface-dark); 
+      border: 1px solid var(--border-dark); 
+      color: var(--text-muted);
+      border-radius: 6px; 
+      padding: 4px 8px; 
+      cursor: pointer; 
+      font-size: 11px;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+    .gear-btn:hover, .gear-btn.active { 
+      color: #FFFFFF; 
+      border-color: var(--primary-accent); 
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+
+    .status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: var(--surface-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+
+    .badge { 
+      width: 8px; 
+      height: 8px; 
+      border-radius: 50%; 
+      background: #EF4444; 
+      display: inline-block; 
+      margin-right: 6px; 
+    }
+    .badge.on { 
+      background: #8E2DE2; 
+      box-shadow: 0 0 8px #8E2DE2; 
+    }
+
+    .tabs { 
+      display: flex; 
+      gap: 6px; 
+      margin-bottom: 12px; 
+    }
+    .tab {
+      flex: 1; 
+      padding: 8px; 
+      background: var(--surface-dark); 
+      border: 1px solid var(--border-dark);
+      color: var(--text-muted); 
+      border-radius: 6px; 
+      cursor: pointer; 
+      font-weight: 700; 
+      font-size: 11px;
+      transition: all 0.2s ease;
+    }
+    .tab.active { 
+      background: var(--primary-gradient); 
+      color: #FFFFFF; 
+      border-color: transparent; 
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    .field { margin-bottom: 10px; }
+    label { 
+      display: block; 
+      font-size: 10px; 
+      color: var(--text-muted); 
+      text-transform: uppercase; 
+      margin-bottom: 5px; 
+      font-weight: 800; 
+      letter-spacing: 0.5px;
+    }
+
+    textarea, select, input[type="text"] {
+      width: 100%; 
+      background: #0E051D; 
+      border: 1px solid var(--border-dark); 
+      color: #F8FAFC;
+      padding: 8px; 
+      border-radius: 6px; 
+      font-size: 12px; 
+      font-weight: 500;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    textarea:focus, select:focus, input[type="text"]:focus { 
+      border-color: var(--border-focus); 
+      box-shadow: 0 0 8px var(--primary-glow);
+    }
+
+    .btn {
+      width: 100%; 
+      padding: 12px; 
+      background: var(--primary-gradient); 
+      color: #FFFFFF;
+      border: none; 
+      border-radius: 8px; 
+      font-weight: 800; 
+      font-size: 12px;
+      cursor: pointer; 
+      margin-top: 6px;
+      box-shadow: 0 4px 16px var(--primary-glow);
+      transition: all 0.2s ease;
+      letter-spacing: 0.5px;
+    }
+    .btn:hover { 
+      filter: brightness(1.12);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(142, 45, 226, 0.6);
+    }
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-danger {
+      width: 100%; 
+      padding: 11px; 
+      background: var(--danger-gradient); 
+      color: #FFFFFF;
+      border: 1px solid var(--danger-border); 
+      border-radius: 8px; 
+      font-weight: 800; 
+      font-size: 12px;
+      cursor: pointer; 
+      margin-top: 10px;
+      box-shadow: 0 4px 16px var(--danger-glow);
+      transition: all 0.2s ease;
+    }
+    .btn-danger:hover { 
+      filter: brightness(1.15);
+      border-color: #B91C1C;
+      box-shadow: 0 6px 20px rgba(135, 0, 0, 0.6);
+    }
+
+    .log-container { margin-top: 12px; }
+    .log {
+      background: #080210; 
+      border: 1px solid var(--border-dark); 
+      border-radius: 6px;
+      padding: 8px; 
+      height: 95px; 
+      overflow-y: auto; 
+      font-family: monospace;
+      font-size: 10px; 
+      color: #DDD6FE; 
+      white-space: pre-wrap;
+    }
+
+    .automation-view {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 8px;
+    }
+    .circle-wrapper {
+      position: relative;
+      width: 130px;
+      height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .circle-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .circle-bg {
+      fill: none;
+      stroke: #24123E;
+      stroke-width: 8;
+      stroke-dasharray: 4, 8;
+    }
+    .circle-progress {
+      fill: none;
+      stroke: #8E2DE2;
+      stroke-width: 8;
+      stroke-dasharray: 4, 8;
+      filter: drop-shadow(0 0 6px #8E2DE2);
+    }
+    .circle-wrapper.spinning .circle-svg {
+      animation: spin 3s linear infinite;
+    }
+
+    .circle-center-text {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .circle-count {
+      font-size: 26px;
+      font-weight: 800;
+      color: #FFFFFF;
+      line-height: 1.1;
+    }
+    .circle-status-text {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-top: 3px;
+      letter-spacing: 0.5px;
+    }
+
+    .counter-details {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      margin-top: 16px;
+      background: var(--surface-dark);
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-dark);
+    }
+    .counter-item { text-align: center; }
+    .counter-item .c-title { 
+      font-size: 9px; 
+      color: var(--text-muted); 
+      text-transform: uppercase; 
+      font-weight: 800; 
+      letter-spacing: 0.5px;
+    }
+    .counter-item .c-val { 
+      font-size: 16px; 
+      color: #A78BFA; 
+      font-weight: 800; 
+      margin-top: 2px;
+    }
+
+    /* FOOTER STICKY CONTAINER */
+    .footer-stick-container {
+      flex-shrink: 0;
+      margin-top: auto;
+      padding-top: 16px;
+    }
+
+    .glow-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(142, 45, 226, 0.8), transparent);
+      box-shadow: 0 0 10px rgba(142, 45, 226, 0.9);
+      margin-bottom: 14px;
+    }
+
+    .footer-brand {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .footer-brand-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #8E2DE2;
+      text-shadow: 0 0 12px rgba(142, 45, 226, 0.5);
+      margin-bottom: 4px;
+    }
+    .footer-brand-by {
+      font-size: 12px;
+      color: #94A3B8;
+      font-weight: 600;
+    }
+    .footer-brand-by a {
+      color: #A78BFA;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      transition: color 0.2s ease;
+    }
+    .footer-brand-by a:hover {
+      color: #FFFFFF;
+    }
+
+    .promo-card {
+      background: #120723;
+      border: 1px solid #281446;
+      border-radius: 12px;
+      padding: 13px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+      margin-bottom: 10px;
+    }
+    .promo-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .promo-icon-badge {
+      width: 34px;
+      height: 34px;
+      background: #1C0A38;
+      border: 1px solid #3B1B6D;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #A78BFA;
+      flex-shrink: 0;
+    }
+    .promo-heading {
+      font-size: 13px;
+      font-weight: 800;
+      color: #FFFFFF;
+      line-height: 1.3;
+    }
+    .promo-text {
+      font-size: 11px;
+      color: #94A3B8;
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+    .promo-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .contact-btn {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 12px;
+      background: var(--primary-gradient);
+      color: #FFFFFF;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 12px;
+      border-radius: 8px;
+      box-shadow: 0 4px 14px var(--primary-glow);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .contact-btn:hover {
+      filter: brightness(1.15);
+      transform: translateY(-1px);
+    }
+    .social-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: #180B2E;
+      border: 1px solid #2F1754;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #94A3B8;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .social-btn:hover {
+      transform: translateY(-1px);
+    }
+    .social-btn.wa:hover {
+      color: #22C55E;
+      border-color: #22C55E;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
+    }
+    .social-btn.fb:hover {
+      color: #3B82F6;
+      border-color: #3B82F6;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+    }
+    .social-btn.mail:hover {
+      color: #EC4899;
+      border-color: #EC4899;
+      box-shadow: 0 0 10px rgba(236, 72, 153, 0.4);
+    }
+
+    .version-tag {
+      text-align: center;
+      font-size: 10px;
+      color: #553E7A;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .version-tag::before, .version-tag::after {
+      content: "";
+      height: 1px;
+      width: 36px;
+      background: #24123E;
+    }
+
+    .hidden { display: none !important; }
+
+    @keyframes spin {
+      100% { transform: rotate(270deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-main-content">
+    <div class="header-bar">
+      <div>
+        <h2>Gemini Bridge</h2>
+        <div class="sub">
+          CREATOR CORE CANVAS INJECTOR by 
+          <a href="https://www.facebook.com/m.mubashirmamoon/" target="_blank" rel="noopener noreferrer">Mubashir Mamoon</a>
+        </div>
+      </div>
+      <!-- Top Corner Settings Button Restored -->
+      <button id="openSettingsBtn" class="gear-btn">⚙ Settings</button>
+    </div>
+
+    <div class="status">
+      <div><span id="dot" class="badge"></span><span id="stext" style="font-weight: 600;">Relay: Checking...</span></div>
+      <span id="modetext" style="color: var(--text-sub); font-weight: 800;">MANUAL</span>
+    </div>
+
+    <!-- 2 Clean Navigation Tabs -->
+    <div class="tabs">
+      <button class="tab active" id="btnManual">Manual</button>
+      <button class="tab" id="btnAuto">Automation</button>
+    </div>
+
+    <!-- Mode 1: Manual Mode Form -->
+    <div id="manualContainer">
+      <div class="field">
+        <label>Aspect Ratio</label>
+        <select id="ratioInput">
+          <option value="1:1" selected>Square 1:1 — 1536x1536</option>
+          <option value="2:3">Portrait 2:3 — 1024x1536</option>
+          <option value="3:2">Landscape 3:2 — 1536x1024</option>
+          <option value="3:4">Portrait 3:4 — 1152x1536</option>
+          <option value="4:3">Landscape 4:3 — 1536x1152</option>
+          <option value="4:5">Portrait 4:5 — 1232x1536</option>
+          <option value="5:4">Landscape 5:4 — 1536x1232</option>
+          <option value="9:16">Portrait 9:16 — 1024x1792</option>
+          <option value="16:9">Landscape 16:9 — 1792x1024</option>
+          <option value="21:9">Ultra Wide 21:9 — 1792x768</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Character Prompt (Optional)</label>
+        <textarea id="charPrompt" rows="2" placeholder="e.g., young cyber hacker with silver hair..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Style Prompt (Optional)</label>
+        <textarea id="stylePrompt" rows="2" placeholder="e.g., Cyberpunk neon concept art, 8k render..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Image Prompts (One per line)</label>
+        <textarea id="mainPrompts" rows="3" placeholder="Prompt 1...&#10;Prompt 2..."></textarea>
+      </div>
+
+      <button id="injectBtn" class="btn">GENERATE IMAGES</button>
+    </div>
+
+    <!-- Mode 2: Automation Mode -->
+    <div id="automationContainer" class="hidden">
+      <div class="automation-view">
+        <div class="circle-wrapper" id="circleWrapper">
+          <svg class="circle-svg" viewBox="0 0 100 100">
+            <circle class="circle-bg" cx="50" cy="50" r="42"></circle>
+            <circle class="circle-progress" id="circleProgress" cx="50" cy="50" r="42"></circle>
+          </svg>
+          <div class="circle-center-text">
+            <span class="circle-count" id="counterNumber">0</span>
+            <span class="circle-status-text" id="counterStatusText">Idle</span>
+          </div>
+        </div>
+
+        <div class="counter-details hidden" id="progressDetailRow">
+          <div class="counter-item">
+            <div class="c-title">Total</div>
+            <div class="c-val" id="totalPromptsVal">0</div>
+          </div>
+          <div class="counter-item">
+            <div class="c-title">Completed</div>
+            <div class="c-val" id="completedPromptsVal">0</div>
+          </div>
+          <div class="counter-item">
+            <div class="c-title">Remaining</div>
+            <div class="c-val" id="remainingPromptsVal">0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mode 3: Inline Settings View (Popup ke bajaye panel ke andar display hoga) -->
+    <div id="settingsContainer" class="hidden">
+      <div class="field">
+        <label>Default Callback Webhook URL</label>
+        <input type="text" id="webhookUrlInput" placeholder="https://api.yourdomain.com/webhook/..." />
+      </div>
+      <div class="field">
+        <label>Downloads Folder Path</label>
+        <input type="text" id="downloadsPathInput" placeholder="C:\Users\PC\Downloads" />
+      </div>
+      <button id="saveWebhookBtn" class="btn">Save Configuration</button>
+    </div>
+
+    <button id="stopBtn" class="btn-danger hidden">■ STOP GENERATION</button>
+
+    <div id="logSection" class="log-container hidden">
+      <label>Execution Logs</label>
+      <div id="logBox" class="log"></div>
+    </div>
+  </div>
+
+  <!-- STICKY FOOTER SECTION -->
+  <div class="footer-stick-container">
+    <div class="glow-divider"></div>
+
+    <div class="footer-brand">
+      <div class="footer-brand-title">Creator Core Canvas Injector</div>
+      <div class="footer-brand-by">
+        by <a href="https://www.facebook.com/m.mubashirmamoon/" target="_blank" rel="noopener noreferrer">
+          Mubashir Mamoon
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="promo-card">
+      <div class="promo-header">
+        <div class="promo-icon-badge">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+          </svg>
+        </div>
+        <div class="promo-heading">Need a custom Chrome extension or automation?</div>
+      </div>
+
+      <div class="promo-text">
+        Custom AI automation and browser extensions, built for your workflow.
+      </div>
+
+      <div class="promo-actions">
+        <!-- Contact Button -->
+        <a href="https://wa.me/923154228873" target="_blank" rel="noopener noreferrer" class="contact-btn">
+          Contact Me
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+
+        <!-- WhatsApp Icon -->
+        <a href="https://wa.me/923154228873" target="_blank" rel="noopener noreferrer" class="social-btn wa" title="Chat on WhatsApp">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M9.53 7.35C9.36 7.35 9.09 7.41 8.86 7.66C8.63 7.91 8 8.5 8 9.71C8 10.92 8.89 12.08 9.01 12.24C9.14 12.41 10.74 14.88 13.19 15.94C15.23 16.82 15.65 16.65 16.1 16.61C16.55 16.56 17.55 16.01 17.76 15.43C17.96 14.85 17.96 14.35 17.9 14.25C17.84 14.15 17.69 14.09 17.46 13.98C17.24 13.86 16.13 13.32 15.92 13.25C15.72 13.17 15.57 13.13 15.42 13.36C15.28 13.59 14.84 14.11 14.71 14.26C14.58 14.41 14.45 14.43 14.23 14.32C14 14.21 13.06 13.9 11.94 12.91C11.07 12.13 10.48 11.17 10.31 10.89C10.15 10.61 10.29 10.45 10.41 10.34C10.51 10.24 10.63 10.08 10.75 9.94C10.86 9.8 10.9 9.7 10.97 9.55C11.05 9.41 11.01 9.28 10.95 9.17C10.89 9.06 10.35 7.74 10.13 7.21C9.91 6.69 9.69 6.77 9.53 6.77L9.53 7.35Z"/>
+          </svg>
+        </a>
+
+        <!-- Facebook Icon -->
+        <a href="https://www.facebook.com/m.mubashirmamoon/" target="_blank" rel="noopener noreferrer" class="social-btn fb" title="Facebook Profile">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+          </svg>
+        </a>
+
+        <!-- Mail Icon -->
+        <a href="mailto:m.mubashirmamoon@gmail.com" id="mailLinkBtn" class="social-btn mail" title="Send Email">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="version-tag">v1.0.0</div>
+  </div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>
