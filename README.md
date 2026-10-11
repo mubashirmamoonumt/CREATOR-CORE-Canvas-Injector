@@ -11,6 +11,8 @@ Autonomous batch image generation on Canvas via a Chrome extension and a local r
 
 Author: Mubashir Mamoon
 
+<img width="1672" height="941" alt="image" src="https://github.com/user-attachments/assets/84e6f377-8d25-4e0a-a112-53e5b14c3427" />
+
 ## Overview
 
 `CREATOR CORE – Canvas Injector` connects a local relay service to a Chrome extension that automates Canvas-based image generation. You send a job via HTTP, the extension performs the generation, and the relay uploads the resulting ZIP archive to your callback URL.
