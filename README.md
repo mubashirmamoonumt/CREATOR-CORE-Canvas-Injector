@@ -40,12 +40,6 @@ API call ──> Relay (Ngrok) ──> Chrome Extension ──> Canvas
                           200 OK ──> tab closed + ZIP deleted
 ```
 
-## Automation
-
-The system should remain on and Chrome should be open. You do not need to stay on the same Chrome profile or the same tab. Simply open the Chrome profile where the extension is installed, leave it active, and the automation can keep running.
-
-This same workflow works on an RDP machine as well. Keep Chrome open and active on the remote desktop, and the extension will stay available 24/7 for your automation without needing to keep a specific profile or tab focused.
-
 ## Requirements
 
 | Item | Details |
@@ -196,6 +190,12 @@ Content-Type: text/plain
 
 ok
 ```
+
+## Automation Notes
+
+The system should remain on and Chrome should be open. You do not need to stay on the same Chrome profile or the same tab. Simply open the Chrome profile where the extension is installed, leave it active, and the automation can keep running.
+
+This same workflow works on an RDP machine as well. Keep Chrome open and active on the remote desktop, and the extension will stay available 24/7 for your automation without needing to keep a specific profile or tab focused.
 
 ## Notes
 
